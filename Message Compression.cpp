@@ -19,7 +19,7 @@ std::string reverseString(const std::string& str) {
 
     return reversedStr;
 }
-
+//This is Dan Bab.
 int main() {
     std::string input;  // Input string
 
