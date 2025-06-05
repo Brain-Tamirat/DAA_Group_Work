@@ -63,7 +63,7 @@ public:
         states[i][j].timer++;
         if (states[i][j].timer >= MIN_GREEN) {
             int currentPhaseQueues, alternativePhaseQueues;
-            
+
             if (states[i][j].phaseNS) {
                 currentPhaseQueues = queues[i][j].north + queues[i][j].south;
                 alternativePhaseQueues = queues[i][j].east + queues[i][j].west;
@@ -72,7 +72,7 @@ public:
                 alternativePhaseQueues = queues[i][j].north + queues[i][j].south;
             }
 
-            if (alternativePhaseQueues > THRESHOLD * currentPhaseQueues || 
+            if (alternativePhaseQueues > THRESHOLD * currentPhaseQueues ||
                 states[i][j].timer >= MAX_GREEN) {
                 states[i][j].phaseNS = !states[i][j].phaseNS;
                 states[i][j].timer = 0;
@@ -84,7 +84,7 @@ public:
             // Process North queue (vehicles going South)
             int moveNorth = std::min(FLOW_RATE, queues[i][j].north);
             queues[i][j].north -= moveNorth;
-            
+
             if (i + 1 < ROWS) {
                 queues[i + 1][j].north += moveNorth; // Move to next intersection's north queue
             } else {
@@ -94,7 +94,7 @@ public:
             // Process South queue (vehicles going North)
             int moveSouth = std::min(FLOW_RATE, queues[i][j].south);
             queues[i][j].south -= moveSouth;
-            
+
             if (i - 1 >= 0) {
                 queues[i - 1][j].south += moveSouth; // Move to previous intersection's south queue
             } else {
@@ -104,7 +104,7 @@ public:
             // Process East queue (vehicles going East)
             int moveEast = std::min(FLOW_RATE, queues[i][j].east);
             queues[i][j].east -= moveEast;
-            
+
             if (j + 1 < COLS) {
                 queues[i][j + 1].east += moveEast; // Move to next intersection's east queue
             } else {
@@ -114,7 +114,7 @@ public:
             // Process West queue (vehicles going West)
             int moveWest = std::min(FLOW_RATE, queues[i][j].west);
             queues[i][j].west -= moveWest;
-            
+
             if (j - 1 >= 0) {
                 queues[i][j - 1].west += moveWest; // Move to previous intersection's west queue
             } else {
@@ -123,15 +123,40 @@ public:
         }
     }
 
-    void simulateStep() 
-       
+void simulateStep() {
+        generateVehicles();
+        int exitedThisStep = 0;
+
+        // Process each intersection
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                processIntersection(i, j, exitedThisStep);
+            }
+        }
+
+        totalExited += exitedThisStep;
+
+        // Calculate total vehicles in system
+        int totalQueued = 0;
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                totalQueued += queues[i][j].north + queues[i][j].south +
+                               queues[i][j].east + queues[i][j].west;
+            }
+        }
+        totalWaitingTime += totalQueued;
+    }
+
     void printStatistics() const {
         std::cout << "\n====== Traffic Simulation Results ======\n";
         std::cout << "Grid size: " << ROWS << "x" << COLS << " intersections\n";
-       
+        std::cout << "Simulation duration: " << TOTAL_STEPS << " time steps\n";
+        std::cout << "Total vehicles exited: " << totalExited << "\n";
+        std::cout << "Average waiting time: "
                   << std::fixed << std::setprecision(2)
                   << (totalExited > 0 ? static_cast<double>(totalWaitingTime) / totalExited : 0)
-        std::cout << "Average queue length: " 
+                  << " timesteps per vehicle\n";
+        std::cout << "Average queue length: "
                   << static_cast<double>(totalWaitingTime) / TOTAL_STEPS << "\n";
 
         std::cout << "\nFinal queue lengths:\n";
