@@ -2,7 +2,8 @@
 #include <queue>
 #include <unordered_map>
 #include <vector>
-#include <fstream>
+#include <memory>
+#include <algorithm>
 
 class HuffmanCoder {
 public:
