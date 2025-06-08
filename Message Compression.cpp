@@ -24,41 +24,41 @@ struct NodeCompare {
 
 class HuffmanCoder {
 public:
-    HuffmanCoder() : root(nullptr) {}
+HuffmanCoder() : root(nullptr) {}
 
-    void buildTree(const std::string& text) {
-        if (text.empty()) return;
+    void buildTree(const string& text) {
+        if (text.empty()) return;
 
-        // Calculate character frequencies
-        std::unordered_map<char, int> freqMap;
-        for (char ch : text) {
-            freqMap[ch]++;
-        }
+        // Calculate character frequencies
+        std::unordered_map<char, int> freqMap;
+        for (char ch : text) {
+            freqMap[ch]++;
+        }
 
-        // Create priority queue (min-heap)
-        std::priority_queue<std::shared_ptr<HuffmanNode>,
-                           std::vector<std::shared_ptr<HuffmanNode>>,
-                           NodeCompare> pq;
+        // Create priority queue (min-heap)
+        priority_queue<shared_ptr<HuffmanNode>,
+                           vector<shared_ptr<HuffmanNode>>,
+                           NodeCompare> pq;
 
-        for (const auto& pair : freqMap) {
-            pq.push(std::make_shared<HuffmanNode>(pair.first, pair.second));
-        }
+        for (const auto& pair : freqMap) {
+            pq.push(std::make_shared<HuffmanNode>(pair.first, pair.second));
+        }
 
-        // Build Huffman tree
-        while (pq.size() > 1) {
-            auto left = pq.top(); pq.pop();
-            auto right = pq.top(); pq.pop();
+        // Build Huffman tree
+        while (pq.size() > 1) {
+            auto left = pq.top(); pq.pop();
+            auto right = pq.top(); pq.pop();
 
-            auto internal = std::make_shared<HuffmanNode>('\0', left->freq + right->freq);
-            internal->left = left;
-            internal->right = right;
+            auto internal = std::make_shared<HuffmanNode>('\0', left->freq + right->freq);
+            internal->left = left;
+            internal->right = right;
 
-            pq.push(internal);
-        }
+            pq.push(internal);
+        }
 
-        root = pq.empty() ? nullptr : pq.top();
-        generateCodes(root, "");
-    }
+        root = pq.empty() ? nullptr : pq.top();
+        generateCodes(root, "");
+    }
 
     std::string encode(const std::string& text) {
         std::string encoded;
