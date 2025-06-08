@@ -51,7 +51,20 @@ public:
         return encoded;
     }
 
-
+std::string decode(const std::string& encodedStr) {  
+    std::string decoded;  
+    auto current = root;  
+      
+    for (char bit : encodedStr) {  
+        current = (bit == '0') ? current->left : current->right;  
+          
+        if (!current->left && !current->right) {  
+            decoded += current->data;  
+            current = root;  
+        }  
+    }  
+    return decoded;  
+}
 
  int main(){
      const std::string text = "Design and Analysis of Algorithm";
