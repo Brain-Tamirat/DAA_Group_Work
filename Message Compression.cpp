@@ -83,6 +83,47 @@ std::string decode(const std::string& encodedStr) {
     return decoded;  
 }
 
+void printCodes() const {
+        std::cout << "Huffman Codes:\n";
+        for (const auto& pair : huffmanCodes) {
+            std::cout << "'" << pair.first << "' : " << pair.second << "\n";
+        }
+    }
+
+    void compressionStats(const std::string& original) const {
+        int originalBits = original.length() * 8;
+        int compressedBits = 0;
+
+        for (char ch : original) {
+            compressedBits += huffmanCodes.at(ch).length();
+        }
+
+        double ratio = (1.0 - static_cast<double>(compressedBits) / originalBits) * 100.0;
+
+        std::cout << "\n--- Compression Statistics ---\n";
+        std::cout << "Original Size: " << originalBits << " bits\n";
+        std::cout << "Compressed Size: " << compressedBits << " bits\n";
+        std::cout << "Compression Ratio: " << ratio << "%\n";
+        std::cout << "Space Saved: " << (originalBits - compressedBits) << " bits\n";
+    }
+
+private:
+    std::shared_ptr<HuffmanNode> root;
+    std::unordered_map<char, std::string> huffmanCodes;
+
+    void generateCodes(const std::shared_ptr<HuffmanNode>& node, const std::string& code) {
+        if (!node) return;
+
+        if (!node->left && !node->right) {
+            huffmanCodes[node->data] = code;
+            return;
+        }
+
+        generateCodes(node->left, code + "0");
+        generateCodes(node->right, code + "1");
+    }
+};
+
  int main(){
      const std::string text = "Design and Analysis of Algorithm";
         HuffmanCoder huffman; 
