@@ -1,3 +1,4 @@
+//***HuffMan Coding DAA Group Work***
 #include <iostream>
 #include <queue>
 #include <unordered_map>
@@ -5,32 +6,36 @@
 #include <memory>
 #include <algorithm>
 
+using namespace std;
+
+//***Faris***
 class HuffmanNode {
 public:
     char data;
     int freq;
-    std::shared_ptr<HuffmanNode> left;
-    std::shared_ptr<HuffmanNode> right;
+    shared_ptr<HuffmanNode> left;
+    shared_ptr<HuffmanNode> right;
 
     HuffmanNode(char ch, int f) : data(ch), freq(f), left(nullptr), right(nullptr) {}
     ~HuffmanNode() = default;
 };
 
+//***Daniel***
 struct NodeCompare {
-    bool operator()(const std::shared_ptr<HuffmanNode>& a, const std::shared_ptr<HuffmanNode>& b) {
+    bool operator()(const shared_ptr<HuffmanNode>& a, const shared_ptr<HuffmanNode>& b) {
         return a->freq > b->freq;
     }
 };
 
 class HuffmanCoder {
 public:
-HuffmanCoder() : root(nullptr) {}
+    HuffmanCoder() : root(nullptr) {}
 
     void buildTree(const string& text) {
         if (text.empty()) return;
 
         // Calculate character frequencies
-        std::unordered_map<char, int> freqMap;
+        unordered_map<char, int> freqMap;
         for (char ch : text) {
             freqMap[ch]++;
         }
@@ -41,7 +46,7 @@ HuffmanCoder() : root(nullptr) {}
                            NodeCompare> pq;
 
         for (const auto& pair : freqMap) {
-            pq.push(std::make_shared<HuffmanNode>(pair.first, pair.second));
+            pq.push(make_shared<HuffmanNode>(pair.first, pair.second));
         }
 
         // Build Huffman tree
@@ -49,7 +54,7 @@ HuffmanCoder() : root(nullptr) {}
             auto left = pq.top(); pq.pop();
             auto right = pq.top(); pq.pop();
 
-            auto internal = std::make_shared<HuffmanNode>('\0', left->freq + right->freq);
+            auto internal = make_shared<HuffmanNode>('\0', left->freq + right->freq);
             internal->left = left;
             internal->right = right;
 
@@ -60,58 +65,60 @@ HuffmanCoder() : root(nullptr) {}
         generateCodes(root, "");
     }
 
-    std::string encode(const std::string& text) {
-        std::string encoded;
-        for (char ch : text) {
-            encoded += huffmanCodes[ch];
-        }
-        return encoded;
-    }
+    string encode(const string& text) {
+        string encoded;
+        for (char ch : text) {
+            encoded += huffmanCodes[ch];
+        }
+        return encoded;
+    }
 
-std::string decode(const std::string& encodedStr) {  
-    std::string decoded;  
-    auto current = root;  
-      
-    for (char bit : encodedStr) {  
-        current = (bit == '0') ? current->left : current->right;  
-          
-        if (!current->left && !current->right) {  
-            decoded += current->data;  
-            current = root;  
+//***Hamza***
+    string decode(const string& encodedStr) {  
+        string decoded;  
+        auto current = root;  
+        
+        for (char bit : encodedStr) {  
+            current = (bit == '0') ? current->left : current->right;  
+            
+            if (!current->left && !current->right) {  
+                decoded += current->data;  
+                current = root;  
+            }  
         }  
-    }  
-    return decoded;  
-}
-
-void printCodes() const {
-        std::cout << "Huffman Codes:\n";
-        for (const auto& pair : huffmanCodes) {
-            std::cout << "'" << pair.first << "' : " << pair.second << "\n";
-        }
+        return decoded;  
     }
 
-    void compressionStats(const std::string& original) const {
-        int originalBits = original.length() * 8;
-        int compressedBits = 0;
-
-        for (char ch : original) {
-            compressedBits += huffmanCodes.at(ch).length();
+//***Digafe***
+    void printCodes() const {
+            cout << "Huffman Codes:\n";
+            for (const auto& pair : huffmanCodes) {
+                cout << "'" << pair.first << "' : " << pair.second << "\n";
+            }
         }
 
-        double ratio = (1.0 - static_cast<double>(compressedBits) / originalBits) * 100.0;
+        void compressionStats(const string& original) const {
+            int originalBits = original.length() * 8;
+            int compressedBits = 0;
 
-        std::cout << "\n--- Compression Statistics ---\n";
-        std::cout << "Original Size: " << originalBits << " bits\n";
-        std::cout << "Compressed Size: " << compressedBits << " bits\n";
-        std::cout << "Compression Ratio: " << ratio << "%\n";
-        std::cout << "Space Saved: " << (originalBits - compressedBits) << " bits\n";
-    }
+            for (char ch : original) {
+                compressedBits += huffmanCodes.at(ch).length();
+            }
+
+            double ratio = (1.0 - static_cast<double>(compressedBits) / originalBits) * 100.0;
+
+            cout << "\n--- Compression Statistics ---\n";
+            cout << "Original Size: " << originalBits << " bits\n";
+            cout << "Compressed Size: " << compressedBits << " bits\n";
+            cout << "Compression Ratio: " << ratio << "%\n";
+            cout << "Space Saved: " << (originalBits - compressedBits) << " bits\n";
+        }
 
 private:
-    std::shared_ptr<HuffmanNode> root;
-    std::unordered_map<char, std::string> huffmanCodes;
+    shared_ptr<HuffmanNode> root;
+    unordered_map<char, string> huffmanCodes;
 
-    void generateCodes(const std::shared_ptr<HuffmanNode>& node, const std::string& code) {
+    void generateCodes(const shared_ptr<HuffmanNode>& node, const string& code) {
         if (!node) return;
 
         if (!node->left && !node->right) {
@@ -124,21 +131,35 @@ private:
     }
 };
 
+//***Bisrat***
  int main(){
-     const std::string text = "Design and Analysis of Algorithm";
-        HuffmanCoder huffman; 
+    string message;
+    HuffmanCoder huffman;
+
+	cout<<" Enter Your Message: ";
+	getline(cin,message);
+    string text = message;
+
+    // Build Huffman tree and generate codes
         huffman.buildTree(text);
+
+    // Display generated codes
         huffman.printCodes();
-         std::string encoded = huffman.encode(text);
-        std::cout << "\nEncoded Binary: " << encoded << "\n";
-        // Decode to verify correctness
-        std::string decoded = huffman.decode(encoded);
-        std::cout << "Decoded Text: " << decoded << "\n";
-        // Display compression statistics
-        huffman.compressionStats(text);
-        // Verification
-        std::cout << "\nVerification: Original and decoded texts "
-                  << (text == decoded ? "match!" : "do NOT match!") << "\n";
-        
-        return 0;
+
+    // Encode the text
+    string encoded = huffman.encode(text);
+    cout << "\nEncoded Binary: " << encoded << "\n";
+
+    // Decode to verify correctness
+    string decoded = huffman.decode(encoded);
+    cout << "Decoded Text: " << decoded << "\n";
+
+    // Display compression statistics
+    huffman.compressionStats(text);
+
+    // Verification
+    cout << "\nVerification: Original and decoded texts "
+                << (text == decoded ? "match!" : "do NOT match!") << "\n";
+    
+    return 0;
     }
