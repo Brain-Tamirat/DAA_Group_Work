@@ -55,6 +55,7 @@ public:
 
  int main(){
      const std::string text = "Design and Analysis of Algorithm";
+        HuffmanCoder huffman; 
         huffman.buildTree(text);
         huffman.printCodes();
          std::string encoded = huffman.encode(text);
