@@ -5,6 +5,23 @@
 #include <memory>
 #include <algorithm>
 
+class HuffmanNode {
+public:
+    char data;
+    int freq;
+    std::shared_ptr<HuffmanNode> left;
+    std::shared_ptr<HuffmanNode> right;
+
+    HuffmanNode(char ch, int f) : data(ch), freq(f), left(nullptr), right(nullptr) {}
+    ~HuffmanNode() = default;
+};
+
+struct NodeCompare {
+    bool operator()(const std::shared_ptr<HuffmanNode>& a, const std::shared_ptr<HuffmanNode>& b) {
+        return a->freq > b->freq;
+    }
+};
+
 class HuffmanCoder {
 public:
     HuffmanCoder() : root(nullptr) {}
